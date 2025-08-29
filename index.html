@@ -5,19 +5,36 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Meet For Free</title>
   <link rel="stylesheet" href="style.css">
+  <!-- Firebase scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
+  <script src="firebase-config.js"></script>
 </head>
 <body>
+  <!-- Sun-shine vector background -->
+  <svg id="bg-sunshine" width="100%" height="100%" viewBox="0 0 1440 600" style="position:fixed;top:0;left:0;z-index:-1;pointer-events:none;" xmlns="http://www.w3.org/2000/svg">
+    <radialGradient id="sunshine-gradient" cx="50%" cy="20%" r="70%">
+      <stop offset="0%" stop-color="#a7f3ff" stop-opacity="0.7"/>
+      <stop offset="60%" stop-color="#38bdf8" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#0f1724" stop-opacity="0.5"/>
+    </radialGradient>
+    <circle cx="720" cy="120" r="400" fill="url(#sunshine-gradient)" />
+    <g opacity="0.15">
+      <ellipse cx="720" cy="120" rx="600" ry="80" fill="#a7f3ff" />
+      <ellipse cx="720" cy="120" rx="500" ry="60" fill="#38bdf8" />
+    </g>
+  </svg>
   <div class="container">
     <header>
       <div class="brand">
         <div>
           <h1>Meet For Free</h1>
-          <div class="muted">Create account, post, and view feed — demo (local)</div>
+          <div class="muted">Create account, post, and view feed — demo (cloud sync)</div>
         </div>
       </div>
       <div class="actions" id="top-actions"></div>
     </header>
-
     <div class="layout">
       <aside>
         <div class="card" id="left-card">
@@ -26,66 +43,20 @@
         <div style="height:12px"></div>
         <div class="card">
           <h3 style="margin:0 0 8px 0">About</h3>
-          <div class="muted">This is a single-file demo social app. Accounts & posts are saved in your browser (localStorage). Not for production.</div>
+          <div class="muted">This is a demo social app. Accounts & posts are synced in the cloud using Firebase. Not for production.</div>
         </div>
       </aside>
-
       <main>
         <div class="card">
-            <div id="composer-area">
-              <input type="file" id="file-upload" />
-            </div>
+          <div id="composer-area"></div>
         </div>
-
         <div id="feed" style="margin-top:12px"></div>
-    <div id="file-previews"></div>
       </main>
     </div>
-
     <footer>Made with ❤️ — Save this file as <code>social.html</code> and open in your browser.</footer>
   </div>
-
   <!-- login/register modal (hidden) -->
   <div id="modal-root" style="display:none"></div>
-
   <script src="script.js"></script>
-    <script>
-      document.getElementById('file-upload').addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        if (file) {
-          const preview = document.createElement('div');
-          preview.textContent = `Uploaded file: ${file.name}`;
-          document.getElementById('file-previews').appendChild(preview);
-        }
-      });
-    </script>
-
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
-    apiKey: "AIzaSyCWqtDomZKbCEdlvZKQwLG525RSfBlgGmI",
-    authDomain: "apptest1247.firebaseapp.com",
-    projectId: "apptest1247",
-    storageBucket: "apptest1247.firebasestorage.app",
-    messagingSenderId: "15201220138",
-    appId: "1:15201220138:web:de7965682997bf78c67553",
-    measurementId: "G-XDF5EWGZZS"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
-    
-
-
-
 </body>
 </html>
