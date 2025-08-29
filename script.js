@@ -14,6 +14,24 @@ let users = loadJSON('ss_users', []);
 let posts = loadJSON('ss_posts', []);
 let current = localStorage.getItem('ss_current') || null;
 
+// Admin credentials (hardcoded)
+const ADMIN_USERNAME = "admin";
+const ADMIN_PASSWORD = "admin123";
+
+// Ensure admin account exists on first load
+function ensureAdminAccount() {
+  if (!users.find(u => u.username === ADMIN_USERNAME)) {
+    users.push({
+      username: ADMIN_USERNAME,
+      password: ADMIN_PASSWORD,
+      joined: new Date().toISOString(),
+      type: "admin"
+    });
+    saveJSON('ss_users', users);
+  }
+}
+ensureAdminAccount();
+
 // ----------------- Auth -----------------
 function openModal(html){const root=qs('#modal-root');root.innerHTML='';root.style.display='flex';const overlay=el('div',{class:'overlay'});overlay.addEventListener('click', e=>{ if(e.target===overlay){root.style.display='none'} });
   const modal = el('div',{class:'modal'}); modal.appendChild(html); overlay.appendChild(modal); root.appendChild(overlay);
@@ -38,17 +56,34 @@ function showLogin(){
 function showRegister(){
   const form = el('div',{}, el('h3',{}, 'Register'),
     el('input',{type:'text',placeholder:'username',id:'reg-username'}),
-    el('input',{type:'email',placeholder:'email',id:'reg-email'}),
     el('input',{type:'password',placeholder:'password',id:'reg-password'}),
+    el('input',{type:'file',id:'reg-photo',accept:'image/*'}),
     el('div',{}, el('button',{class:'primary',id:'do-register'}, 'Create account'))
   );
   openModal(form);
   qs('#do-register').addEventListener('click', ()=>{
-    const u=qs('#reg-username').value.trim();const e=qs('#reg-email').value.trim();const p=qs('#reg-password').value;
+    const u=qs('#reg-username').value.trim();
+    const p=qs('#reg-password').value;
+    const photoInput = qs('#reg-photo');
+    let accountType = 'user';
+    if(u === ADMIN_USERNAME && p === ADMIN_PASSWORD){ accountType = 'admin'; }
     if(!u||!p){alert('Provide username and password');return}
     if(users.find(x=>x.username===u)){alert('Username taken');return}
-    users.push({username:u,email:e,password:p,joined:new Date().toISOString()}); saveJSON('ss_users',users);
-    current = u; localStorage.setItem('ss_current', current); renderApp(); qs('#modal-root').style.display='none';
+    let photoData = null;
+    if(photoInput.files.length > 0){
+      const reader = new FileReader();
+      reader.onload = function(evt){
+        photoData = evt.target.result;
+        users.push({username:u,password:p,joined:new Date().toISOString(),type:accountType,photo:photoData});
+        saveJSON('ss_users',users);
+        current = u; localStorage.setItem('ss_current', current); renderApp(); qs('#modal-root').style.display='none';
+      };
+      reader.readAsDataURL(photoInput.files[0]);
+    } else {
+      users.push({username:u,password:p,joined:new Date().toISOString(),type:accountType});
+      saveJSON('ss_users',users);
+      current = u; localStorage.setItem('ss_current', current); renderApp(); qs('#modal-root').style.display='none';
+    }
   });
 }
 
@@ -105,7 +140,9 @@ function renderLeftCard(){
     const profile = el('div',{class:'profile'},
       el('div',{class:'avatar'}, avatarContent),
       el('div',{},
-        el('div',{}, user.username),
+        el('div',{}, user.username,
+          user.type==='admin' ? el('span',{class:'admin-badge'},'Admin') : null
+        ),
         el('div',{class:'muted small'}, user.email || '—')
       )
     );
@@ -202,9 +239,18 @@ function renderComposer(){
 function renderFeed(){
   const f=qs('#feed'); f.innerHTML='';
   if(posts.length===0){ f.appendChild(el('div',{class:'card'}, el('div',{}, 'No posts yet — be the first!'))); return }
+  const currentUser = users.find(u=>u.username===current);
   posts.forEach(p=>{
     const post = el('div',{class:'post'});
-    const meta = el('div',{class:'meta'}, el('div',{}, el('strong',{}, p.author||'unknown'), el('span',{class:'muted small', style:'margin-left:8px'}, new Date(p.created).toLocaleString())), el('div',{}, p.author===current? el('button',{class:'btn-ghost',title:'delete', 'data-id':p.id}, 'Delete') : el('span',{}, '')) );
+    const meta = el('div',{class:'meta'},
+      el('div',{}, el('strong',{}, p.author||'unknown'),
+        currentUser && currentUser.type==='admin' ? el('span',{class:'admin-badge',style:'margin-left:6px'},'Admin') : null
+      ),
+      el('span',{class:'muted small', style:'margin-left:8px'}, new Date(p.created).toLocaleString()),
+      el('div',{},
+        (p.author===current || (currentUser && currentUser.type==='admin')) ? el('button',{class:'btn-ghost',title:'delete', 'data-id':p.id}, 'Delete') : el('span',{}, '')
+      )
+    );
     post.appendChild(meta);
     post.appendChild(el('div',{class:'content'}, p.content));
     // File preview
@@ -224,11 +270,23 @@ function renderFeed(){
     post.appendChild(actions);
     f.appendChild(post);
   });
-
   // attach event listeners
   f.querySelectorAll('[data-like]').forEach(btn=>{btn.addEventListener('click', e=>{const id=Number(btn.getAttribute('data-like')); if(!current){alert('Login to like');return} toggleLike(id)})});
   f.querySelectorAll('[data-share]').forEach(btn=>{btn.addEventListener('click', ()=>{navigator.clipboard?.writeText(window.location.href + '#post-' + btn.getAttribute('data-share')).then(()=>alert('Post link copied to clipboard'), ()=>alert('Could not copy'))})});
   f.querySelectorAll('[data-id]').forEach(btn=>{btn.addEventListener('click', ()=>{ if(confirm('Delete this post?')) deletePost(Number(btn.getAttribute('data-id'))); })});
+}
+
+function renderAllUsers(){
+  // Add this function if not present, or update your user list rendering
+  const allUsers = el('div',{class:'all-users'},
+    el('h3',{},'All Users'),
+    ...users.map(u => el('div',{class:'user-list-item'},
+      el('div',{class:'avatar'}, u.photo ? el('img',{src:u.photo,alt:u.username,style:'width:32px;height:32px;border-radius:50%;object-fit:cover;'}) : u.username.charAt(0).toUpperCase()),
+      el('span',{style:'margin-left:8px;font-size:15px;font-weight:500'},u.username),
+      u.type==='admin' ? el('span',{class:'admin-badge',style:'margin-left:6px'},'Admin') : null
+    ))
+  );
+  return allUsers;
 }
 
 function renderApp(){ renderTopActions(); renderLeftCard(); renderComposer(); renderFeed(); }
