@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Meet For Free</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo">M F F</div>
+        <div>
+          <h1>Meet For Free</h1>
+          <div class="muted">Create account, post, and view feed — demo (local)</div>
+        </div>
+      </div>
+      <div class="actions" id="top-actions"></div>
+    </header>
+
+    <div class="layout">
+      <aside>
+        <div class="card" id="left-card">
+          <!-- Profile card populated by JS -->
+        </div>
+        <div style="height:12px"></div>
+        <div class="card">
+          <h3 style="margin:0 0 8px 0">About</h3>
+          <div class="muted">This is a single-file demo social app. Accounts & posts are saved in your browser (localStorage). Not for production.</div>
+        </div>
+      </aside>
+
+      <main>
+        <div class="card">
+            <div id="composer-area">
+              <input type="file" id="file-upload" />
+            </div>
+        </div>
+
+        <div id="feed" style="margin-top:12px"></div>
+    <div id="file-previews"></div>
+      </main>
+    </div>
+
+    <footer>Made with ❤️ — Save this file as <code>social.html</code> and open in your browser.</footer>
+  </div>
+
+  <!-- login/register modal (hidden) -->
+  <div id="modal-root" style="display:none"></div>
+
+  <script src="script.js"></script>
+    <script>
+      document.getElementById('file-upload').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+          const preview = document.createElement('div');
+          preview.textContent = `Uploaded file: ${file.name}`;
+          document.getElementById('file-previews').appendChild(preview);
+        }
+      });
+    </script>
+</body>
+</html>
