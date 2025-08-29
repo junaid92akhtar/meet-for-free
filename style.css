@@ -11,9 +11,40 @@
 }
 body {
   margin: 0;
-  background: linear-gradient(180deg, #071020, #0f1724);
+  /* Dark at top, blue in middle, dark at bottom */
+  background: linear-gradient(180deg, #0854d8 0%, #ec00cd 60%, #3041a5 100%);
   color: #e6eef8;
   min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+#bg-sunshine {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  pointer-events: none;
+}
+.card, .post {
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.card:hover, .post:hover {
+  box-shadow: 0 4px 24px rgba(56,189,248,0.18);
+  transform: translateY(-2px) scale(1.01);
+}
+button, .btn-ghost, button.primary {
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+button:hover, .btn-ghost:hover, button.primary:hover {
+  box-shadow: 0 2px 8px rgba(56,189,248,0.18);
+  background: #38bdf8;
+  color: #fff;
+}
+input[type=text]:focus, input[type=password]:focus, input[type=email]:focus, textarea:focus {
+  outline: 2px solid #38bdf8;
+  background: rgba(56,189,248,0.08);
 }
 
 /* Layout and containers */
@@ -27,6 +58,14 @@ body {
   grid-template-columns: 300px 1fr;
   gap: 18px;
   margin-top: 18px;
+}
+main {
+  min-width: 0;
+  width: 100%;
+}
+#feed {
+  min-height: 600px;
+  font-size: 1.15em;
 }
 
 /* Header, brand, logo, actions */
@@ -95,13 +134,17 @@ button.primary {
   padding: 14px;
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
 }
 .post {
   background: rgba(255,255,255,0.02);
-  padding: 12px;
+  padding: 24px;
   border-radius: 10px;
   margin-bottom: 12px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  font-size: 1.18em;
 }
 .post .meta {
   display: flex;
@@ -118,6 +161,7 @@ button.primary {
   border-radius: 8px;
   margin-top: 8px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  text-align: center;
 }
 .post a[download] {
   margin-top: 8px;
@@ -163,6 +207,7 @@ button.primary {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  color: #ffffff; 
 }
 textarea {
   width: 100%;
@@ -222,6 +267,20 @@ textarea {
 }
 .comment-form button:hover {
   background: #1d4ed8;
+}
+
+/* Admin badge */
+.admin-badge {
+  display: inline-block;
+  background: linear-gradient(90deg,#38bdf8,#2563eb);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 2px 8px;
+  margin-left: 4px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 1px 4px rgba(56,189,248,0.12);
 }
 
 /* Responsive styles */
