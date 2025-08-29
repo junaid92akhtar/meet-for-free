@@ -10,7 +10,6 @@
   <div class="container">
     <header>
       <div class="brand">
-        <div class="logo">M F F</div>
         <div>
           <h1>Meet For Free</h1>
           <div class="muted">Create account, post, and view feed — demo (local)</div>
@@ -60,5 +59,33 @@
         }
       });
     </script>
+
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyCWqtDomZKbCEdlvZKQwLG525RSfBlgGmI",
+    authDomain: "apptest1247.firebaseapp.com",
+    projectId: "apptest1247",
+    storageBucket: "apptest1247.firebasestorage.app",
+    messagingSenderId: "15201220138",
+    appId: "1:15201220138:web:de7965682997bf78c67553",
+    measurementId: "G-XDF5EWGZZS"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
+    
+
+
+
 </body>
 </html>
