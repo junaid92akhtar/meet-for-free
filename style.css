@@ -12,7 +12,7 @@
 body {
   margin: 0;
   /* Dark at top, blue in middle, dark at bottom */
-  background: linear-gradient(180deg, #0854d8 0%, #ec00cd 60%, #3041a5 100%);
+  background: linear-gradient(180deg, #071020 0%, #1e5253 60%, #071020 100%);
   color: #e6eef8;
   min-height: 100vh;
   position: relative;
@@ -24,7 +24,7 @@ body {
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: -1;
+  z-index: 1;
   pointer-events: none;
 }
 .card, .post {
